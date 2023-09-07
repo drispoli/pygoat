@@ -22,15 +22,18 @@ on:
     branches: [ "gha" ]
 
 jobs:
-  build:
-
+  FoD-SAST-Scan:
+    # Use the appropriate runner for building your source code.
     runs-on: ubuntu-latest
     steps:
+    # Check out source code
     - uses: actions/checkout@v3
+    # Python version required by the project
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
         python-version: 3.9
+    # Required for build and SAST analysis
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
@@ -40,7 +43,7 @@ jobs:
       run: |
           pip install pipenv
        
-    - name: Generate Pipfile.lock
+    - name: Generate Pipfile.lock required for SCA analysis
       run: |
         pipenv lock
         
@@ -64,7 +67,7 @@ jobs:
     - name: Package Code + Dependencies
       run: scancentral package $PACKAGE_OPTS -o package.zip
       env:
-        PACKAGE_OPTS: "-bt none -pyr requirements.txt -oss"
+        PACKAGE_OPTS: "-bt none -pyr requirements.txt -oss" #oss option added for carrying the lock file into the payload
       
     # Start Fortify on Demand SAST scan and wait until results complete. For more information on FoDUploader commands, see https://github.com/fod-dev/fod-uploader-java
     # TODO: Update ENV variables for your application and create the necessary GitHub Secrets.  Helpful hints:
