@@ -1,4 +1,4 @@
-name: Django CI
+name: FoD SAST + SCA on Python
 
 on:
   push:
